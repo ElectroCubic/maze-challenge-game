@@ -6,26 +6,39 @@
 
 body {
     margin: 0;
-    padding: 20px;
-    background: #eee;
+    min-height: 100vh;
+    padding: 30px 16px;
+
+    background: #121212;
+    color: #fff;
+
     font-family: Arial, sans-serif;
-    color: #222;
 }
 
 .game {
-    width: min(94vw, 760px);
+    width: min(94vw, 900px);
     margin: auto;
     text-align: center;
 }
 
+
+/* =========================
+   TITLE
+   ========================= */
+
 h1 {
-    margin: 0 0 6px;
-    font-size: 28px;
+    margin: 0 0 8px;
+
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 4px;
 }
 
 .subtitle {
-    margin: 0 0 18px;
-    color: #666;
+    margin: 0 0 24px;
+
+    color: #999;
+    font-size: 16px;
 }
 
 
@@ -36,164 +49,295 @@ h1 {
 .hud {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+
+    margin-bottom: 20px;
 }
 
 .hud-box {
-    background: #fff;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    padding: 8px 14px;
+    min-width: 190px;
+
+    padding: 11px 16px;
+
+    background: #1e1e1e;
+
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    color: #ccc;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.hud-box span {
+    color: #fff;
+}
+
+.energy-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.energy-box strong {
+    color: #fff;
+}
+
+#treasure {
+    font-size: 18px;
     font-weight: bold;
 }
 
+.treasure-complete {
+    color: #62e894 !important;
+}
+
+.treasure-missing {
+    color: #ff6b6b !important;
+}
 
 /* =========================
-   Messages
+   ENERGY BAR
    ========================= */
 
-#message {
-    min-height: 24px;
-    margin: 8px 0 12px;
+.energy-bar {
+    width: 80px;
+    height: 10px;
+
+    overflow: hidden;
+
+    background: #111;
+
+    border: 1px solid #444;
+    border-radius: 5px;
+}
+
+#energy-fill {
+    width: 100%;
+    height: 100%;
+
+    background: #e58b24;
+
+    border-radius: 4px;
+
+    transition: width 0.15s ease;
+}
+
+/* =========================
+   LEVEL
+   ========================= */
+
+.level-display {
+    margin: 0 0 10px;
+
+    color: #aaa;
+
+    font-size: 14px;
     font-weight: bold;
+
+    letter-spacing: 2px;
 }
 
 
 /* =========================
-   Maze
+   MAZE
    ========================= */
 
 .maze-wrap {
     width: 100%;
-    overflow: auto;
-    padding: 8px;
-    background: #fff;
-    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    display: flex;
+    justify-content: center;
+
+    padding: 0;
 }
 
 #maze {
     display: grid;
-    grid-template-columns: repeat(var(--maze-width), 18px);
-    grid-auto-rows: 18px;
 
-    width: calc(var(--maze-width) * 18px);
-    margin: auto;
+    grid-template-columns: repeat(var(--maze-width), 24px);
+    grid-auto-rows: 24px;
+
+    width: max-content;
+    height: max-content;
+
+    margin: 0;
+
+    border: 4px solid #333;
+    outline: 1px solid #555;
+
+    box-shadow:
+        0 0 0 2px #080808,
+        0 12px 30px rgba(0, 0, 0, 0.45);
+
+    flex-shrink: 0;
 }
 
+
+/* =========================
+   CELLS
+   ========================= */
+
 .cell {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 10px;
+    position: relative;
+
+    font-size: 13px;
     font-weight: bold;
 }
 
 
 /* =========================
-   Basic Tiles
+   BASIC TILES
    ========================= */
 
 .wall {
-    background: #111;
+    background: #080808;
 }
 
 .path {
-    background: #333;
+    background: #292929;
 }
 
 .start {
-    background: #3498db;
-    color: #fff;
+    background: #1e1e1e;
+    color: #5db7ff;
 }
 
 .exit {
-    background: #333;
+    background: #1e1e1e;
     color: #fff;
+
+    font-size: 16px;
 }
 
 .treasure {
-    background: #333;
-    color: #fff;
+    background: #302b18;
+    color: #ffd84d;
+
+    font-size: 15px;
+
+    box-shadow:
+        inset 0 0 0 1px #806b1c;
 }
 
-.energy-pickup {
-    background: #333;
-    color: #fff;
+
+.collected {
+    background: #292929;
+    color: #806b1c;
 }
 
 
 /* =========================
-   Special Tiles
+   ENERGY PICKUP
+   ========================= */
+
+.energy-pickup {
+    background: #30251a;
+    color: #ff9d3d;
+
+    font-size: 15px;
+
+    box-shadow:
+        inset 0 0 0 1px #75481d;
+}
+
+
+/* =========================
+   SPECIAL TILES
    ========================= */
 
 .special-red {
-    background: #d94a4a;
-    color: #fff;
+    background: #4a2020;
+    color: #ff6b6b;
+
+    box-shadow:
+        inset 0 0 0 1px #8d3838;
 }
 
 .special-green {
-    background: #35b96b;
-    color: #fff;
+    background: #1d402c;
+    color: #62e894;
+
+    box-shadow:
+        inset 0 0 0 1px #32794e;
 }
 
 .special-yellow {
-    background: #d9a51e;
-    color: #fff;
+    background: #4a3d18;
+    color: #ffe16a;
+
+    box-shadow:
+        inset 0 0 0 1px #8b762b;
 }
 
 .special-blue {
-    background: #398bd1;
-    color: #fff;
+    background: #1d3448;
+    color: #62baff;
+
+    box-shadow:
+        inset 0 0 0 1px #35658a;
 }
 
 
 /* =========================
-   Player
+   PLAYER
    ========================= */
 
 .player {
-    background: #ff8c00;
+    background: #ff8c00 !important;
     color: #fff !important;
 
-    outline: 2px solid #fff;
-    box-shadow: inset 0 0 0 2px #000;
-}
+    border: 2px solid #fff;
 
-.collected {
-    background: #d4af37;
-    color: #fff;
+    box-shadow:
+        inset 0 0 0 3px #a65300,
+        inset 0 0 10px rgba(255, 220, 150, 0.45);
+
+    z-index: 2;
 }
 
 
 /* =========================
-   Controls
+   CONTROLS
    ========================= */
 
 .controls {
     width: 190px;
-    margin: 18px auto 0;
+
+    margin: 24px auto 0;
 
     display: grid;
+
     grid-template-columns: repeat(3, 58px);
-    gap: 7px;
+
+    gap: 8px;
 
     justify-content: center;
 }
 
 .control {
     width: 58px;
-    height: 48px;
+    height: 52px;
 
-    border: 0;
-    border-radius: 8px;
+    border: 1px solid #444;
+    border-radius: 10px;
 
-    background: #333;
+    background: #242424;
     color: #fff;
 
     font-size: 22px;
@@ -201,31 +345,150 @@ h1 {
 
     cursor: pointer;
     touch-action: manipulation;
+
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3);
+
+    transition:
+        transform 0.08s,
+        background 0.08s,
+        border-color 0.08s;
+}
+
+.control:hover {
+    background: #303030;
+    border-color: #666;
 }
 
 .control:active {
-    transform: scale(0.95);
-    background: #555;
+    transform: scale(0.93);
+    background: #3a3a3a;
 }
 
 .empty {
     visibility: hidden;
 }
 
+/* =========================
+   INSTRUCTIONS
+   ========================= */
+
+.instructions {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+
+    margin-top: 18px;
+    margin-bottom: 20px;
+
+    color: #888;
+
+    font-size: 15px;
+    font-weight: bold;
+}
+
 
 /* =========================
-   Reset Button
+   RESET / NEXT LEVEL
    ========================= */
 
 .reset {
-    margin-top: 12px;
-    padding: 9px 18px;
+    margin-top: 14px;
 
-    border: 0;
-    border-radius: 7px;
+    padding: 10px 20px;
 
-    background: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+
+    background: #242424;
     color: #fff;
 
+    font-size: 14px;
+    font-weight: bold;
+
     cursor: pointer;
+
+    transition:
+        background 0.15s,
+        transform 0.08s;
+}
+
+.reset:hover {
+    background: #333;
+}
+
+.reset:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 10px;
+    }
+
+    h1 {
+        font-size: 32px;
+        letter-spacing: 3px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .hud {
+        gap: 7px;
+    }
+
+    .hud-box {
+        min-width: 135px;
+        padding: 9px 12px;
+        font-size: 13px;
+    }
+
+    #maze {
+        grid-template-columns: repeat(
+            var(--maze-width),
+            22px
+        );
+
+        grid-auto-rows: 22px;
+
+        width: calc(
+            var(--maze-width) * 22px
+        );
+    }
+
+    .cell {
+        width: 22px;
+        height: 22px;
+    }
+
+    .controls {
+        margin-top: 20px;
+    }
+
+    .instructions {
+        gap: 8px 18px;
+        font-size: 12px;
+    }
+
+    .energy-box {
+        gap: 8px;
+    }
+
+    .energy-bar {
+        width: 60px;
+    }
+
+    .level-display {
+        margin-bottom: 8px;
+    }
 }

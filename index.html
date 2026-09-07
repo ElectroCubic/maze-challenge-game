@@ -1,39 +1,84 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GameDevUtopia — Maze Game</title>
-<link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CUBESCAPED</title>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+
 <main class="game">
-<h1>🕹️ ESCAPE</h1>
-<p class="subtitle">Find the treasure. Reach the exit.</p>
 
-<div class="hud">
-  <div class="hud-box">⚡ Energy: <span id="energy">100</span></div>
-  <div class="hud-box">💎 Treasure: <span id="treasure">NO</span></div>
-  <div class="hud-box">📐 Level: <span id="level-number">1 / 1</span></div>
-</div>
+    <h1>CUBESCAPED</h1>
 
-<div id="message">Find the treasure, then reach the exit.</div>
+    <p class="subtitle">
+        Find the treasure. Reach the exit.
+    </p>
 
-<div class="maze-wrap"><div id="maze"></div></div>
+    <div class="hud">
+        <div class="hud-box energy-box">
+            <span>
+                Energy: <strong id="energy">100</strong>
+            </span>
 
-<div class="controls">
-  <button class="control empty" tabindex="-1">.</button>
-  <button class="control" data-dir="up">▲</button>
-  <button class="control empty" tabindex="-1">.</button>
-  <button class="control" data-dir="left">◀</button>
-  <button class="control" data-dir="down">▼</button>
-  <button class="control" data-dir="right">▶</button>
-</div>
+            <div class="energy-bar">
+                <div id="energy-fill"></div>
+            </div>
+        </div>
 
-<button class="reset" id="reset">Restart Level</button>
+        <div class="hud-box">
+            Treasure: <span id="treasure">NO</span>
+        </div>
+    </div>
+
+    <div class="level-display">
+        LEVEL <span id="level-number">1</span>
+    </div>
+
+    <div class="maze-wrap">
+        <div id="maze"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control empty" tabindex="-1">.</button>
+
+        <button class="control" data-dir="up">
+            ▲
+        </button>
+
+        <button class="control empty" tabindex="-1">.</button>
+
+        <button class="control" data-dir="left">
+            ◀
+        </button>
+
+        <button class="control" data-dir="down">
+            ▼
+        </button>
+
+        <button class="control" data-dir="right">
+            ▶
+        </button>
+    </div>
+
+    <div class="instructions">
+        <span>Move: Arrow Keys / WASD</span>
+        <span>Mobile: Use the buttons</span>
+    </div>
+
+    <button class="reset" id="reset">
+        Restart Level
+    </button>
+
 </main>
 
 <script src="js/levels.js"></script>
 <script src="js/game.js"></script>
+
 </body>
+
 </html>
