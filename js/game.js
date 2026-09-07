@@ -5,274 +5,693 @@ Edit js/levels.js instead.
 */
 
 const DIRS = {
-    up:{dr:-1,dc:0,opposite:"down"},
-    down:{dr:1,dc:0,opposite:"up"},
-    left:{dr:0,dc:-1,opposite:"right"},
-    right:{dr:0,dc:1,opposite:"left"}
+    up: {
+        dr: -1,
+        dc: 0,
+        opposite: "down"
+    },
+
+    down: {
+        dr: 1,
+        dc: 0,
+        opposite: "up"
+    },
+
+    left: {
+        dr: 0,
+        dc: -1,
+        opposite: "right"
+    },
+
+    right: {
+        dr: 0,
+        dc: 1,
+        opposite: "left"
+    }
 };
 
-let currentLevelIndex=0;
-let rows=[],grid=[],height=0,width=0;
-let player=null,energy=0,startEnergy=100,pickupAmount=10;
-let hasTreasure=false,bluePending=null,collectedPickups=new Set();
-let gameOver=false;
 
-const $=id=>document.getElementById(id);
+let currentLevelIndex = 0;
 
-function key(r,c){return `${r},${c}`}
+let rows = [];
+let grid = [];
+let height = 0;
+let width = 0;
 
-function arrowDirection(a){
-    return {"↑":"up","↓":"down","←":"left","→":"right"}[a]||null;
+let player = null;
+
+let energy = 0;
+let startEnergy = 100;
+let pickupAmount = 10;
+
+let hasTreasure = false;
+let bluePending = null;
+
+let collectedPickups = new Set();
+
+let gameOver = false;
+
+
+const $ = id => document.getElementById(id);
+
+
+function key(r, c) {
+    return `${r},${c}`;
 }
 
-function findCell(symbol){
-    for(let r=0;r<height;r++)
-        for(let c=0;c<width;c++)
-            if(grid[r][c]===symbol)return{r,c};
+
+function arrowDirection(a) {
+    return {
+        "↑": "up",
+        "↓": "down",
+        "←": "left",
+        "→": "right"
+    }[a] || null;
+}
+
+
+function findCell(symbol) {
+    for (let r = 0; r < height; r++) {
+        for (let c = 0; c < width; c++) {
+
+            if (grid[r][c] === symbol) {
+                return {
+                    r,
+                    c
+                };
+            }
+
+        }
+    }
+
     return null;
 }
 
-function specialAt(r,c){
-    return LEVELS[currentLevelIndex].specials?.[key(r,c)]||null;
+
+function specialAt(r, c) {
+    return LEVELS[currentLevelIndex].specials?.[key(r, c)] || null;
 }
 
-function wall(r,c){
-    return r<0||r>=height||c<0||c>=width||grid[r][c]==="#";
+
+function wall(r, c) {
+    return (
+        r < 0 ||
+        r >= height ||
+        c < 0 ||
+        c >= width ||
+        grid[r][c] === "#"
+    );
 }
 
-function loadLevel(index){
-    if(index<0||index>=LEVELS.length)return;
 
-    currentLevelIndex=index;
-    const level=LEVELS[index];
-
-    rows=level.map.trim().split("\n").map(r=>r.replace(/\r$/,""));
-    height=rows.length;
-    width=rows[0]?.length||0;
-
-    if(!height||!width)throw new Error(`Level ${index+1} is empty.`);
-    if(!rows.every(r=>r.length===width)){
-        const bad=rows.findIndex(r=>r.length!==width);
-        throw new Error(`Level ${index+1}: row ${bad+1} has ${rows[bad].length} columns; expected ${width}.`);
+function loadLevel(index) {
+    if (index < 0 || index >= LEVELS.length) {
+        return;
     }
 
-    grid=rows.map(r=>r.split(""));
-    startEnergy=level.energy??100;
-    pickupAmount=level.pickup??10;
+    currentLevelIndex = index;
+
+    const level = LEVELS[index];
+
+    rows = level.map
+        .trim()
+        .split("\n")
+        .map(r => r.replace(/\r$/, ""));
+
+    height = rows.length;
+    width = rows[0]?.length || 0;
+
+
+    if (!height || !width) {
+        throw new Error(`Level ${index + 1} is empty.`);
+    }
+
+
+    if (!rows.every(r => r.length === width)) {
+        const bad = rows.findIndex(
+            r => r.length !== width
+        );
+
+        throw new Error(
+            `Level ${index + 1}: row ${bad + 1} has ${rows[bad].length} columns; expected ${width}.`
+        );
+    }
+
+
+    grid = rows.map(r => r.split(""));
+
+    startEnergy = level.energy ?? 100;
+    pickupAmount = level.pickup ?? 10;
 
     resetLevel();
 }
 
-function resetLevel(){
-    player=findCell("S");
-    if(!player)throw new Error(`Level ${currentLevelIndex+1} has no S.`);
-    if(!findCell("T"))throw new Error(`Level ${currentLevelIndex+1} has no T.`);
-    if(!findCell("E"))throw new Error(`Level ${currentLevelIndex+1} has no E.`);
 
-    energy=startEnergy;
-    hasTreasure=false;
-    bluePending=null;
-    collectedPickups=new Set();
-    gameOver=false;
+function resetLevel() {
 
-    const next=$("next-level");
-    if(next)next.remove();
+    player = findCell("S");
+
+
+    if (!player) {
+        throw new Error(
+            `Level ${currentLevelIndex + 1} has no S.`
+        );
+    }
+
+
+    if (!findCell("T")) {
+        throw new Error(
+            `Level ${currentLevelIndex + 1} has no T.`
+        );
+    }
+
+
+    if (!findCell("E")) {
+        throw new Error(
+            `Level ${currentLevelIndex + 1} has no E.`
+        );
+    }
+
+
+    energy = startEnergy;
+    hasTreasure = false;
+    bluePending = null;
+
+    collectedPickups = new Set();
+
+    gameOver = false;
+
+
+    const next = $("next-level");
+
+    if (next) {
+        next.remove();
+    }
+
 
     message("Find the treasure, then reach the exit.");
+
     render();
 }
 
-function message(text){$("message").textContent=text}
 
-function render(){
-    const maze=$("maze");
-    maze.innerHTML="";
-    maze.style.setProperty("--maze-width",width);
+function message(text) {
+    $("message").textContent = text;
+}
 
-    for(let r=0;r<height;r++){
-        for(let c=0;c<width;c++){
-            const cell=document.createElement("div");
-            const value=grid[r][c];
-            cell.className="cell";
 
-            if(value==="#"){
+function render() {
+
+    const maze = $("maze");
+
+    maze.innerHTML = "";
+
+    maze.style.setProperty(
+        "--maze-width",
+        width
+    );
+
+
+    for (let r = 0; r < height; r++) {
+
+        for (let c = 0; c < width; c++) {
+
+            const cell = document.createElement("div");
+
+            const value = grid[r][c];
+
+            cell.className = "cell";
+
+
+            if (value === "#") {
+
                 cell.classList.add("wall");
-            }else{
+
+            } else {
+
                 cell.classList.add("path");
 
-                if(value==="S"){cell.classList.add("start");cell.textContent="S"}
-                if(value==="E"){cell.classList.add("exit");cell.textContent="⚑"}
 
-                if(value==="T"){
-                    if(hasTreasure)cell.classList.add("collected");
-                    else{cell.classList.add("treasure");cell.textContent="💎"}
+                if (value === "S") {
+                    cell.classList.add("start");
+                    cell.textContent = "S";
                 }
 
-                if(value==="+"&&!collectedPickups.has(key(r,c))){
+
+                if (value === "E") {
+                    cell.classList.add("exit");
+                    cell.textContent = "⚑";
+                }
+
+
+                if (value === "T") {
+
+                    if (hasTreasure) {
+                        cell.classList.add("collected");
+                    } else {
+                        cell.classList.add("treasure");
+                        cell.textContent = "💎";
+                    }
+
+                }
+
+
+                if (
+                    value === "+" &&
+                    !collectedPickups.has(key(r, c))
+                ) {
                     cell.classList.add("energy-pickup");
-                    cell.textContent="⚡";
+                    cell.textContent = "⚡";
                 }
 
-                const special=specialAt(r,c);
-                if(special){
+
+                const special = specialAt(r, c);
+
+
+                if (special) {
+
                     cell.classList.remove("path");
-                    cell.classList.add("special-"+special.type);
-                    cell.textContent=special.dir;
+
+                    cell.classList.add(
+                        "special-" + special.type
+                    );
+
+                    cell.textContent = special.dir;
                 }
             }
 
-            if(player&&player.r===r&&player.c===c){
+
+            if (
+                player &&
+                player.r === r &&
+                player.c === c
+            ) {
                 cell.classList.add("player");
-                cell.textContent="";
+                cell.textContent = "";
             }
+
 
             maze.appendChild(cell);
         }
     }
 
-    $("energy").textContent=energy;
-    $("treasure").textContent=hasTreasure?"YES":"NO";
-    $("level-number").textContent=`${currentLevelIndex+1} / ${LEVELS.length}`;
+
+    $("energy").textContent = energy;
+
+    $("treasure").textContent =
+        hasTreasure ? "YES" : "NO";
+
+    $("level-number").textContent =
+        `${currentLevelIndex + 1} / ${LEVELS.length}`;
 }
 
-function move(input){
-    if(gameOver)return;
-    if(energy<=0){lose();return;}
+
+function move(input) {
+
+    if (gameOver) {
+        return;
+    }
+
+
+    if (energy <= 0) {
+        lose();
+        return;
+    }
+
 
     energy--;
-    let direction=input;
 
-    if(bluePending){
-        direction=bluePending;
-        bluePending=null;
+    let direction = input;
+
+
+    /*
+    BLUE TILE
+    Force the next movement in its direction.
+    */
+
+    if (bluePending) {
+
+        direction = bluePending;
+
+        bluePending = null;
+
         message("🔵 Forced movement!");
-    }else{
-        const special=specialAt(player.r,player.c);
 
-        if(special&&special.type==="red"&&input===arrowDirection(special.dir)){
+    } else {
+
+        const special = specialAt(
+            player.r,
+            player.c
+        );
+
+
+        /*
+        RED TILE
+        Block the specified direction.
+        */
+
+        if (
+            special &&
+            special.type === "red" &&
+            input === arrowDirection(special.dir)
+        ) {
+
             message("🔴 That direction is blocked!");
+
             render();
-            if(energy<=0)lose();
+
+            if (energy <= 0) {
+                lose();
+            }
+
             return;
         }
 
-        if(special&&special.type==="yellow"){
-            const d=arrowDirection(special.dir);
-            if(input===d){
-                direction=DIRS[input].opposite;
+
+        /*
+        YELLOW TILE
+        Invert the specified direction.
+        */
+
+        if (
+            special &&
+            special.type === "yellow"
+        ) {
+
+            const d = arrowDirection(
+                special.dir
+            );
+
+
+            if (input === d) {
+
+                direction =
+                    DIRS[input].opposite;
+
                 message("🟡 Controls inverted!");
             }
         }
     }
 
-    const d=DIRS[direction];
-    if(!d)return;
 
-    const nr=player.r+d.dr,nc=player.c+d.dc;
+    const d = DIRS[direction];
 
-    if(wall(nr,nc)){
-        message("🧱 Blocked!");
-        render();
-        if(energy<=0)lose();
+
+    if (!d) {
         return;
     }
 
-    player={r:nr,c:nc};
+
+    const nr = player.r + d.dr;
+    const nc = player.c + d.dc;
+
+
+    /*
+    WALL
+    */
+
+    if (wall(nr, nc)) {
+
+        message("🧱 Blocked!");
+
+        render();
+
+        if (energy <= 0) {
+            lose();
+        }
+
+        return;
+    }
+
+
+    player = {
+        r: nr,
+        c: nc
+    };
+
+
     handleTile();
+
     render();
 
-    if(energy<=0&&!gameOver)lose();
+
+    if (energy <= 0 && !gameOver) {
+        lose();
+    }
 }
 
-function handleTile(){
-    const special=specialAt(player.r,player.c);
 
-    if(grid[player.r][player.c]==="T"&&!hasTreasure){
-        hasTreasure=true;
+function handleTile() {
+
+    const special = specialAt(
+        player.r,
+        player.c
+    );
+
+
+    /*
+    TREASURE
+    */
+
+    if (
+        grid[player.r][player.c] === "T" &&
+        !hasTreasure
+    ) {
+
+        hasTreasure = true;
+
         message("💎 Treasure collected!");
     }
 
-    if(grid[player.r][player.c]==="+"&&!collectedPickups.has(key(player.r,player.c))){
-        collectedPickups.add(key(player.r,player.c));
-        energy=Math.min(startEnergy,energy+pickupAmount);
+
+    /*
+    ENERGY PICKUP
+    */
+
+    if (
+        grid[player.r][player.c] === "+" &&
+        !collectedPickups.has(
+            key(player.r, player.c)
+        )
+    ) {
+
+        collectedPickups.add(
+            key(player.r, player.c)
+        );
+
+        energy = Math.min(
+            startEnergy,
+            energy + pickupAmount
+        );
+
         message(`⚡ +${pickupAmount} energy!`);
     }
 
-    if(special&&special.type==="green"){
-        const d=DIRS[arrowDirection(special.dir)];
-        const nr=player.r+d.dr,nc=player.c+d.dc;
 
-        if(!wall(nr,nc)){
-            player={r:nr,c:nc};
+    /*
+    GREEN TILE
+    Immediate free movement.
+    */
+
+    if (
+        special &&
+        special.type === "green"
+    ) {
+
+        const d = DIRS[
+            arrowDirection(special.dir)
+        ];
+
+        const nr = player.r + d.dr;
+        const nc = player.c + d.dc;
+
+
+        if (!wall(nr, nc)) {
+
+            player = {
+                r: nr,
+                c: nc
+            };
+
             message("🟢 Free movement!");
+
             handleTile();
         }
     }
 
-    if(special&&special.type==="blue"){
-        bluePending=arrowDirection(special.dir);
-        message(`🔵 Next move is forced ${special.dir}`);
+
+    /*
+    BLUE TILE
+    Queue the forced direction.
+    */
+
+    if (
+        special &&
+        special.type === "blue"
+    ) {
+
+        bluePending =
+            arrowDirection(special.dir);
+
+        message(
+            `🔵 Next move is forced ${special.dir}`
+        );
     }
 
-    if(grid[player.r][player.c]==="E"){
-        if(hasTreasure)completeLevel();
-        else message("⚑ You need the treasure first!");
+
+    /*
+    EXIT
+    */
+
+    if (
+        grid[player.r][player.c] === "E"
+    ) {
+
+        if (hasTreasure) {
+            completeLevel();
+        } else {
+            message(
+                "⚑ You need the treasure first!"
+            );
+        }
     }
 }
 
-function completeLevel(){
-    gameOver=true;
 
-    if(currentLevelIndex<LEVELS.length-1){
-        message(`🎉 Level ${currentLevelIndex+1} complete!`);
+function completeLevel() {
+
+    gameOver = true;
+
+
+    if (
+        currentLevelIndex <
+        LEVELS.length - 1
+    ) {
+
+        message(
+            `🎉 Level ${currentLevelIndex + 1} complete!`
+        );
+
         showNextLevel();
-    }else{
-        message("🏆 You completed every level!");
+
+    } else {
+
+        message(
+            "🏆 You completed every level!"
+        );
     }
 }
 
-function showNextLevel(){
-    const button=document.createElement("button");
-    button.id="next-level";
-    button.className="reset";
-    button.textContent="Next Level →";
 
-    button.addEventListener("click",()=>{
-        loadLevel(currentLevelIndex+1);
-    });
+function showNextLevel() {
+
+    const button =
+        document.createElement("button");
+
+    button.id = "next-level";
+
+    button.className = "reset";
+
+    button.textContent = "Next Level →";
+
+
+    button.addEventListener(
+        "click",
+        () => {
+            loadLevel(
+                currentLevelIndex + 1
+            );
+        }
+    );
+
 
     $(".game").appendChild(button);
 }
 
-function lose(){
-    if(gameOver)return;
-    gameOver=true;
-    message("💀 Out of energy! Restart the level.");
+
+function lose() {
+
+    if (gameOver) {
+        return;
+    }
+
+    gameOver = true;
+
+    message(
+        "💀 Out of energy! Restart the level."
+    );
 }
 
-document.addEventListener("keydown",event=>{
-    const keys={
-        ArrowUp:"up", 
-        ArrowDown:"down", 
-        ArrowLeft:"left", 
-        ArrowRight:"right",
-        w:"up", W:"up",
-        s:"down", S:"down",
-        a:"left", A:"left",
-        d:"right", D:"right"
-    };
 
-    const direction=keys[event.key];
-    if(direction){
-        event.preventDefault();
-        move(direction);
+/*
+KEYBOARD CONTROLS
+*/
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        const keys = {
+
+            ArrowUp: "up",
+            ArrowDown: "down",
+            ArrowLeft: "left",
+            ArrowRight: "right",
+
+            w: "up",
+            W: "up",
+
+            s: "down",
+            S: "down",
+
+            a: "left",
+            A: "left",
+
+            d: "right",
+            D: "right"
+        };
+
+
+        const direction = keys[event.key];
+
+
+        if (direction) {
+
+            event.preventDefault();
+
+            move(direction);
+        }
     }
-});
+);
 
-document.querySelectorAll(".control[data-dir]").forEach(button=>{
-    button.addEventListener("click",()=>move(button.dataset.dir));
-});
 
-$("reset").addEventListener("click",resetLevel);
+/*
+ON-SCREEN CONTROLS
+*/
+
+document
+    .querySelectorAll(".control[data-dir]")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => move(button.dataset.dir)
+        );
+    });
+
+
+/*
+RESET
+*/
+
+$("reset").addEventListener(
+    "click",
+    resetLevel
+);
+
+
+/*
+START GAME
+*/
 
 loadLevel(0);
