@@ -1,0 +1,231 @@
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: #eee;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.game {
+    width: min(94vw, 760px);
+    margin: auto;
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+}
+
+.subtitle {
+    margin: 0 0 18px;
+    color: #666;
+}
+
+
+/* =========================
+   HUD
+   ========================= */
+
+.hud {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.hud-box {
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   Messages
+   ========================= */
+
+#message {
+    min-height: 24px;
+    margin: 8px 0 12px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   Maze
+   ========================= */
+
+.maze-wrap {
+    width: 100%;
+    overflow: auto;
+    padding: 8px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+#maze {
+    display: grid;
+    grid-template-columns: repeat(var(--maze-width), 18px);
+    grid-auto-rows: 18px;
+
+    width: calc(var(--maze-width) * 18px);
+    margin: auto;
+}
+
+.cell {
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   Basic Tiles
+   ========================= */
+
+.wall {
+    background: #111;
+}
+
+.path {
+    background: #333;
+}
+
+.start {
+    background: #3498db;
+    color: #fff;
+}
+
+.exit {
+    background: #333;
+    color: #fff;
+}
+
+.treasure {
+    background: #333;
+    color: #fff;
+}
+
+.energy-pickup {
+    background: #333;
+    color: #fff;
+}
+
+
+/* =========================
+   Special Tiles
+   ========================= */
+
+.special-red {
+    background: #d94a4a;
+    color: #fff;
+}
+
+.special-green {
+    background: #35b96b;
+    color: #fff;
+}
+
+.special-yellow {
+    background: #d9a51e;
+    color: #fff;
+}
+
+.special-blue {
+    background: #398bd1;
+    color: #fff;
+}
+
+
+/* =========================
+   Player
+   ========================= */
+
+.player {
+    background: #ff8c00;
+    color: #fff !important;
+
+    outline: 2px solid #fff;
+    box-shadow: inset 0 0 0 2px #000;
+}
+
+.collected {
+    background: #d4af37;
+    color: #fff;
+}
+
+
+/* =========================
+   Controls
+   ========================= */
+
+.controls {
+    width: 190px;
+    margin: 18px auto 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, 58px);
+    gap: 7px;
+
+    justify-content: center;
+}
+
+.control {
+    width: 58px;
+    height: 48px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #333;
+    color: #fff;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.control:active {
+    transform: scale(0.95);
+    background: #555;
+}
+
+.empty {
+    visibility: hidden;
+}
+
+
+/* =========================
+   Reset Button
+   ========================= */
+
+.reset {
+    margin-top: 12px;
+    padding: 9px 18px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #222;
+    color: #fff;
+
+    cursor: pointer;
+}
