@@ -19,12 +19,11 @@ Every row in a map must have the same width.
 specials use zero-based "row,column" coordinates:
 "2,4": { type:"red", dir:"↑" }
 
-You can add as many level objects as you want.
 */
 
 const LEVELS = [
     {
-        energy: 100,
+        energy: 20,
         pickup: 10,
 
         map: `
@@ -37,27 +36,67 @@ const LEVELS = [
 #######
 `,
 
-        specials: {
-            // "2,4": { type:"red", dir:"↑" }
-        }
+        specials: {}
     },
 
     {
-        energy: 100,
+        energy: 20,
         pickup: 10,
 
         map: `
-#########
-#S......#
-#.#####.#
-#.....+.#
-#.###.#.#
-#...T.#E#
-#########
-`,
+#######
+#S....#
+#.###.#
+#...T.#
+###...#
+#....E#
+#######
+    `,
 
-        specials: {
-            // "2,5": { type:"green", dir:"↓" }
-        }
-    }
+        specials: {}
+    },
+
+    {
+        energy: 20,
+        pickup: 10,
+
+        map: `
+############
+#T........S#
+#..........#
+#..........#
+#..........#
+#..........#
+#.....######
+#.....######
+#.....######
+#.....######
+#E....######
+############
+    `,
+
+        specials: {}
+    },
+
+    {
+        energy: 20,
+        pickup: 20,
+
+        map: `
+############
+#.......E..#
+#..........#
+#T###.######
+#.#.....+..#
+#.######.###
+#.#........#
+#.###.######
+#.#........#
+#.########.#
+#.....S....#
+############
+        `,
+
+        specials: {}
+    },
 ];
