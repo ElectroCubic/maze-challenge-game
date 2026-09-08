@@ -2,7 +2,7 @@
 GAME ENGINE
 */
 
-const TEST_LEVEL = 10;
+const TEST_LEVEL = 8;
 
 if (TEST_LEVEL < 1 || TEST_LEVEL > LEVELS.length) {
     throw new Error("Invalid TEST_LEVEL.");
@@ -518,4 +518,5 @@ $("reset").addEventListener(
     resetLevel
 );
 
-loadLevel(TEST_LEVEL - 1);
+// loadLevel(TEST_LEVEL - 1);
+loadLevel(currentLevelIndex);
