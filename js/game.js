@@ -2,6 +2,12 @@
 GAME ENGINE
 */
 
+const TEST_LEVEL = 5;
+
+if (TEST_LEVEL < 1 || TEST_LEVEL > LEVELS.length) {
+    throw new Error("Invalid TEST_LEVEL.");
+}
+
 const DIRS = {
     up: {
         dr: -1,
@@ -280,24 +286,22 @@ function move(input) {
         return;
     }
 
-    energy--;
-
     let direction = input;
 
     if (bluePending) {
         direction = bluePending;
         bluePending = null;
-    } else {
+    } 
+    else
+    {
         const special = specialAt(
             player.r,
             player.c
         );
 
-        if (
-            special &&
-            special.type === "red" &&
-            input === arrowDirection(special.dir)
-        ) {
+        if (special && special.type === "red" &&
+            input === arrowDirection(special.dir))
+        {
             render();
 
             if (energy <= 0) {
@@ -307,10 +311,7 @@ function move(input) {
             return;
         }
 
-        if (
-            special &&
-            special.type === "yellow"
-        ) {
+        if (special && special.type === "yellow") {
             const d = arrowDirection(
                 special.dir
             );
@@ -339,6 +340,9 @@ function move(input) {
 
         return;
     }
+    else {
+        energy--;
+    }
 
     player = {
         r: nr,
@@ -347,7 +351,8 @@ function move(input) {
 
     handleTile();
 
-    if (gameOver) {
+    if (gameOver)
+    {
         render();
         return;
     }
@@ -508,4 +513,4 @@ $("reset").addEventListener(
     resetLevel
 );
 
-loadLevel(0);
+loadLevel(TEST_LEVEL - 1);
