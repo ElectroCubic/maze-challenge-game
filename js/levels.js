@@ -8,17 +8,15 @@ S start
 T treasure
 E exit
 + energy pickup
-R red tile
-G green tile
-Y yellow tile
-B blue tile
 
-specials use zero-based "row,column" coordinates:
-"2,4": { type:"red", dir:"↑" }
-
+    "↑": "up",
+    "↓": "down",
+    "←": "left",
+    "→": "right"
 */
 
 const LEVELS = [
+    // Level 1
     {
         energy: 20,
         pickup: 10,
@@ -35,7 +33,8 @@ const LEVELS = [
 
         specials: {}
     },
-
+    
+    // Level 2
     {
         energy: 20,
         pickup: 10,
@@ -53,6 +52,7 @@ const LEVELS = [
         specials: {}
     },
 
+    // Level 3
     {
         energy: 20,
         pickup: 10,
@@ -75,6 +75,7 @@ const LEVELS = [
         specials: {}
     },
 
+    // Level 4
     {
         energy: 20,
         pickup: 20,
@@ -97,6 +98,7 @@ const LEVELS = [
         specials: {}
     },
 
+    // Level 5
     {
         energy: 15,
         pickup: 10,
@@ -114,5 +116,153 @@ const LEVELS = [
         `,
 
         specials: {}
+    },
+
+    // Level 6
+    {
+        energy: 20,
+        pickup: 10,
+
+        map: `
+#########
+#S.#...T#
+#..#....#
+#..#....#
+#..#.#..#
+#....#.E#
+#########
+        `,
+
+        specials: {
+            "5,3": { type: "red", dir: "←" },
+            "1,6": { type: "red", dir: "→" },
+            "2,6": { type: "red", dir: "→" },
+            "3,6": { type: "red", dir: "→" },
+        }
+    },
+
+    // Level 7
+    {
+        energy: 20,
+        pickup: 10,
+
+        map: `
+#############
+#...###T..#E#
+#......#..#.#
+##........#.#
+##........#.#
+##..###.....#
+#..#.....####
+#S.#.......+#
+#############
+        `,
+
+        specials: {
+            "5,2": { type: "green", dir: "↑" },
+            "3,4": { type: "green", dir: "→" },
+            "3,6": { type: "green", dir: "→" },
+            "7,9": { type: "green", dir: "→" },
+            "3,9": { type: "green", dir: "↓" },
+            "4,9": { type: "green", dir: "↓" },
+            "2,11": { type: "green", dir: "↑" },
+        }
+    },
+
+    // Level 8
+    {
+        energy: 15,
+        pickup: 10,
+
+        map: `
+#############
+#+.#........#
+#..#.+...#..#
+#..####..#..#
+#.....#..#..#
+####..#..#..#
+#..#..#..#.E#
+#........####
+#..#####...+#
+#..#+....#..#
+#S.#T....#..#
+#############
+        `,
+
+        specials: {
+            "8,2": { type: "yellow", dir: "↓" },
+            "8,2": { type: "yellow", dir: "↑" },
+            "3,2": { type: "yellow", dir: "↑" },
+            "7,6": { type: "yellow", dir: "←" },
+            "4,8": { type: "yellow", dir: "↓" },
+            "5,8": { type: "yellow", dir: "↓" },
+            "9,6": { type: "yellow", dir: "→" },
+            "9,7": { type: "yellow", dir: "→" },
+        }
+    },    
+
+    // Level 9
+    {
+        energy: 20,
+        pickup: 20,
+
+        map: `
+###############
+#+...........S#
+#.###########.#
+#.#.........#.#
+#...#######.#.#
+#.#....E..#+#.#
+#.###.....#.#.#
+#.............#
+#####.....#.#.#
+#......T..#.#+#
+#.#.#######.###
+#+#.........###
+###############
+    `,
+
+        specials: {
+            "7,5": { type: "blue", dir: "→" },
+            "7,6": { type: "blue", dir: "→" },
+            "7,7": { type: "blue", dir: "→" },
+            "7,8": { type: "blue", dir: "→" },
+            "7,9": { type: "blue", dir: "→" }, 
+        }
+    },
+    
+    // Level 10
+    {
+        energy: 15,
+        pickup: 10,
+
+        map: `
+#############
+#...........#
+#.........+.#
+#...#####...#
+#.........#.#
+###..###..#.#
+#S#...+#..#E#
+#.#..#.#..###
+#.#..#.#...+#
+#....#.#....#
+#....#T.....#
+#############
+        `,
+
+        specials: {
+            "2,4": { type: "green", dir: "→" },
+            "2,5": { type: "green", dir: "→" },
+            "2,6": { type: "green", dir: "→" },
+            "2,7": { type: "green", dir: "→" },
+            "2,8": { type: "green", dir: "→" },
+            "7,6": { type: "yellow", dir: "↓" },
+            "8,6": { type: "yellow", dir: "↓" },
+            "9,6": { type: "yellow", dir: "↓" },
+            "10,7": { type: "yellow", dir: "→" },
+            "6,8": { type: "yellow", dir: "↑" },
+
+        }
     },
 ];

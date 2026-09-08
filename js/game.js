@@ -2,7 +2,7 @@
 GAME ENGINE
 */
 
-const TEST_LEVEL = 5;
+const TEST_LEVEL = 10;
 
 if (TEST_LEVEL < 1 || TEST_LEVEL > LEVELS.length) {
     throw new Error("Invalid TEST_LEVEL.");
@@ -162,11 +162,9 @@ function resetLevel() {
     gameOver = false;
     energyFinished = false;
 
-    const next = $("next-level");
-
-    if (next) {
-        next.remove();
-    }
+    document
+        .querySelectorAll("#next-level")
+        .forEach(button => button.remove());
 
     render();
 }
@@ -287,11 +285,13 @@ function move(input) {
     }
 
     let direction = input;
+    let freeYellowMove = false;
 
-    if (bluePending) {
+    if (bluePending)
+    {
         direction = bluePending;
         bluePending = null;
-    } 
+    }
     else
     {
         const special = specialAt(
@@ -299,9 +299,12 @@ function move(input) {
             player.c
         );
 
+        // Red blocked movement costs energy.
         if (special && special.type === "red" &&
             input === arrowDirection(special.dir))
         {
+            energy--;
+
             render();
 
             if (energy <= 0) {
@@ -311,13 +314,14 @@ function move(input) {
             return;
         }
 
-        if (special && special.type === "yellow") {
-            const d = arrowDirection(
-                special.dir
-            );
+        // Yellow inversion is free.
+        if (special &&special.type === "yellow")
+        {
+            const d = arrowDirection(special.dir);
 
             if (input === d) {
                 direction = DIRS[input].opposite;
+                freeYellowMove = true;
             }
         }
     }
@@ -331,28 +335,23 @@ function move(input) {
     const nr = player.r + d.dr;
     const nc = player.c + d.dc;
 
+    // Walls cost nothing.
     if (wall(nr, nc)) {
         render();
-
-        if (energy <= 0) {
-            lose();
-        }
-
         return;
     }
-    else {
+
+    // Normal valid movement costs 1.
+    // Yellow inversion costs 0.
+    if (!freeYellowMove) {
         energy--;
     }
 
-    player = {
-        r: nr,
-        c: nc
-    };
+    player = {r: nr, c: nc};
 
     handleTile();
 
-    if (gameOver)
-    {
+    if (gameOver) {
         render();
         return;
     }
@@ -442,6 +441,12 @@ function completeLevel() {
 }
 
 function showNextLevel() {
+    const existing = $("next-level");
+
+    if (existing) {
+        return;
+    }
+
     const button = document.createElement("button");
 
     button.id = "next-level";
