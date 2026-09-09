@@ -2,12 +2,6 @@
 GAME ENGINE
 */
 
-const TEST_LEVEL = 10;
-
-if (TEST_LEVEL < 1 || TEST_LEVEL > LEVELS.length) {
-    throw new Error("Invalid TEST_LEVEL.");
-}
-
 const DIRS = {
     up: {
         dr: -1,
@@ -637,5 +631,4 @@ $("win-restart").addEventListener(
     }
 );
 
-loadLevel(TEST_LEVEL - 1);
-// loadLevel(currentLevelIndex);
+loadLevel(currentLevelIndex);
