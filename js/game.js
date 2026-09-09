@@ -2,7 +2,7 @@
 GAME ENGINE
 */
 
-const TEST_LEVEL = 8;
+const TEST_LEVEL = 10;
 
 if (TEST_LEVEL < 1 || TEST_LEVEL > LEVELS.length) {
     throw new Error("Invalid TEST_LEVEL.");
@@ -83,17 +83,25 @@ function findCell(symbol) {
 }
 
 function specialAt(r, c) {
-    return LEVELS[currentLevelIndex].specials?.[key(r, c)] || null;
+    const level =
+        currentLevelIndex === -1
+            ? SECRET_LEVEL
+            : LEVELS[currentLevelIndex];
+
+    return level.specials?.[key(r, c)] || null;
 }
 
 function wall(r, c) {
-    return (
+    if (
         r < 0 ||
         r >= height ||
         c < 0 ||
-        c >= width ||
-        grid[r][c] === "#"
-    );
+        c >= width
+    ) {
+        return true;
+    }
+
+    return grid[r][c] === "#";
 }
 
 function loadLevel(index) {
@@ -186,9 +194,42 @@ function render() {
 
             cell.className = "cell";
 
+            // Border Rendering Logic
+
+            const isHidden = value === "H" || value === "O";
+
+            if (!isHidden) {
+                if (r === 0 || grid[r - 1]?.[c] === "H" || grid[r - 1]?.[c] === "O") {
+                    cell.classList.add("maze-border-top");
+                }
+
+                if (r === height - 1 || grid[r + 1]?.[c] === "H" || grid[r + 1]?.[c] === "O") {
+                    cell.classList.add("maze-border-bottom");
+                }
+
+                if (c === 0 || grid[r]?.[c - 1] === "H" || grid[r]?.[c - 1] === "O") {
+                    cell.classList.add("maze-border-left");
+                }
+
+                if (c === width - 1 || grid[r]?.[c + 1] === "H" || grid[r]?.[c + 1] === "O") {
+                    cell.classList.add("maze-border-right");
+                }
+            }
+
             if (value === "#") {
                 cell.classList.add("wall");
-            } else {
+            }
+            else if (value === "H") {
+                cell.classList.add("hidden-path");
+            }
+            else if (value == "O") {
+                cell.classList.add("hidden-exit");
+                cell.textContent = "⚑";
+            }
+            else if (value == "F") {
+                cell.classList.add("fake-wall");
+            }
+            else {
                 cell.classList.add("path");
 
                 if (value === "S") {
@@ -210,10 +251,8 @@ function render() {
                     }
                 }
 
-                if (
-                    value === "+" &&
-                    !collectedPickups.has(key(r, c))
-                ) {
+                if (value === "+" && !collectedPickups.has(key(r, c)))
+                {
                     cell.classList.add("energy-pickup");
                     cell.textContent = "⚡";
                 }
@@ -256,17 +295,18 @@ function render() {
 
     
 
-    if (energyFinished) 
-    {
+    if (energyFinished) {
         $("level-number").textContent = "OUT OF ENERGY!";
-    } 
-    else if (gameOver) 
-    {
+    }
+    else if (gameOver) {
         $("level-number").textContent = "LEVEL COMPLETED!";
-    } 
-    else 
-    {
-        $("level-number").textContent = "LEVEL " + String(currentLevelIndex + 1);
+    }
+    else if (currentLevelIndex === -1) {
+        $("level-number").textContent = "LEVEL ???";
+    }
+    else {
+        $("level-number").textContent =
+            "LEVEL " + String(currentLevelIndex + 1);
     }
 
     const energyPercentage = (energy / startEnergy) * 100;
@@ -364,6 +404,12 @@ function move(input) {
 }
 
 function handleTile() {
+
+    if (grid[player.r][player.c] === "O") {
+        loadSecretLevel();
+        return;
+    }
+
     const special = specialAt(
         player.r,
         player.c
@@ -435,8 +481,18 @@ function handleTile() {
 function completeLevel() {
     gameOver = true;
 
+    // Secret level ending
+    if (currentLevelIndex === -1) {
+        showWinScreen(true);
+        return;
+    }
+
+    // Normal level ending
     if (currentLevelIndex < LEVELS.length - 1) {
         showNextLevel();
+    }
+    else {
+        showWinScreen(false);
     }
 }
 
@@ -471,6 +527,61 @@ function lose() {
     gameOver = true;
 
     render();
+}
+
+function loadSecretLevel() {
+    const level = SECRET_LEVEL;
+
+    rows = level.map
+        .trim()
+        .split("\n")
+        .map(r => r.replace(/\r$/, ""));
+
+    height = rows.length;
+    width = rows[0]?.length || 0;
+
+    if (!height || !width) {
+        throw new Error("Secret level is empty.");
+    }
+
+    if (!rows.every(r => r.length === width)) {
+        throw new Error("Secret level has inconsistent row widths.");
+    }
+
+    grid = rows.map(r => r.split(""));
+
+    startEnergy = level.energy ?? 100;
+    pickupAmount = level.pickup ?? 10;
+
+    currentLevelIndex = -1;
+
+    resetLevel();
+}
+
+function showWinScreen(secret) {
+    const title = $("win-title");
+    const message = $("win-message");
+
+    if (secret) {
+        title.textContent = "YOU REALLY ESCAPED.";
+
+        message.innerHTML =
+            "You found something that wasn't<br>" +
+            "supposed to be found.";
+    }
+    else {
+        title.textContent = "YOU ESCAPED!";
+
+        message.innerHTML =
+            "You found the treasure.<br>" +
+            "<em>But did you find everything?</em>";
+    }
+
+    $("win-screen").classList.add("show");
+}
+
+function hideWinScreen() {
+    $("win-screen").classList.remove("show");
 }
 
 document.addEventListener(
@@ -518,5 +629,13 @@ $("reset").addEventListener(
     resetLevel
 );
 
-// loadLevel(TEST_LEVEL - 1);
-loadLevel(currentLevelIndex);
+$("win-restart").addEventListener(
+    "click",
+    () => {
+        hideWinScreen();
+        loadLevel(0);
+    }
+);
+
+loadLevel(TEST_LEVEL - 1);
+// loadLevel(currentLevelIndex);
