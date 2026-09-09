@@ -103,6 +103,12 @@ function loadLevel(index) {
         return;
     }
 
+    document
+        .querySelector(".maze-wrap")
+        .classList.remove("secret-camera");
+
+    $("maze").style.transform = "";
+
     currentLevelIndex = index;
 
     const level = LEVELS[index];
@@ -171,6 +177,52 @@ function resetLevel() {
     render();
 }
 
+// Only for levels exceeding screen size
+function updateCamera() {
+    if (
+        currentLevelIndex !== -1 ||
+        window.innerWidth > 600
+    ) {
+        return;
+    }
+
+    const maze = $("maze");
+    const wrap = document.querySelector(".maze-wrap");
+
+    if (!maze || !wrap || !player) {
+        return;
+    }
+
+    const cellSize = 22;
+
+    const mazeWidth = width * cellSize;
+    const mazeHeight = height * cellSize;
+
+    const playerX = player.c * cellSize;
+    const playerY = player.r * cellSize;
+
+    let x =
+        wrap.clientWidth / 2 -
+        playerX -
+        cellSize / 2;
+
+    let y =
+        wrap.clientHeight / 2 -
+        playerY -
+        cellSize / 2;
+
+    // Don't let the camera move beyond the maze.
+    const minX = wrap.clientWidth - mazeWidth;
+    const minY = wrap.clientHeight - mazeHeight;
+
+    x = Math.min(0, Math.max(minX, x));
+    y = Math.min(0, Math.max(minY, y));
+
+    maze.style.transform =
+        `translate(${x}px, ${y}px)`;
+}
+
+
 function render() {
     const maze = $("maze");
 
@@ -218,7 +270,7 @@ function render() {
             }
             else if (value == "O") {
                 cell.classList.add("hidden-exit");
-                cell.textContent = "⚑";
+                cell.innerHTML = '<i class="fa-solid fa-flag tile-icon"></i>';
             }
             else if (value == "F") {
                 cell.classList.add("fake-wall");
@@ -228,12 +280,12 @@ function render() {
 
                 if (value === "S") {
                     cell.classList.add("start");
-                    cell.textContent = "S";
+                    cell.innerHTML = '<i class="fa-solid fa-location-dot tile-icon"></i>';
                 }
 
                 if (value === "E") {
                     cell.classList.add("exit");
-                    cell.textContent = "⚑";
+                    cell.innerHTML = '<i class="fa-solid fa-flag tile-icon"></i>';
                 }
 
                 if (value === "T") {
@@ -241,14 +293,14 @@ function render() {
                         cell.classList.add("collected");
                     } else {
                         cell.classList.add("treasure");
-                        cell.textContent = "💎";
+                        cell.innerHTML = '<i class="fa-solid fa-gem tile-icon"></i>';
                     }
                 }
 
                 if (value === "+" && !collectedPickups.has(key(r, c)))
                 {
                     cell.classList.add("energy-pickup");
-                    cell.textContent = "⚡";
+                    cell.innerHTML = '<i class="fa-solid fa-bolt tile-icon"></i>';
                 }
 
                 const special = specialAt(r, c);
@@ -306,6 +358,8 @@ function render() {
     const energyPercentage = (energy / startEnergy) * 100;
 
     $("energy-fill").style.width = `${energyPercentage}%`;
+
+    updateCamera();
 }
 
 function move(input) {
@@ -500,8 +554,8 @@ function showNextLevel() {
     const button = document.createElement("button");
 
     button.id = "next-level";
-    button.className = "reset";
-    button.textContent = "Next Level →";
+    button.className = "reset next-level";
+    button.innerHTML = 'Next Level <i class="fa-solid fa-arrow-right"></i>';
 
     button.addEventListener("click", () => {
         loadLevel(currentLevelIndex + 1);
@@ -548,6 +602,10 @@ function loadSecretLevel() {
     pickupAmount = level.pickup ?? 10;
 
     currentLevelIndex = -1;
+
+    document
+        .querySelector(".maze-wrap")
+        .classList.add("secret-camera");
 
     resetLevel();
 }
@@ -631,4 +689,5 @@ $("win-restart").addEventListener(
     }
 );
 
-loadLevel(currentLevelIndex);
+// loadLevel(currentLevelIndex);
+loadLevel(0);
