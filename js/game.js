@@ -1,6 +1,5 @@
-/*
-GAME ENGINE
-*/
+
+/* GAME LOGIC */
 
 const DIRS = {
     up: {
@@ -47,6 +46,13 @@ let gameOver = false;
 let energyFinished = false;
 
 const $ = id => document.getElementById(id);
+
+const SPECIAL_ICONS = {
+    "↑": "fa-arrow-up",
+    "↓": "fa-arrow-down",
+    "←": "fa-arrow-left",
+    "→": "fa-arrow-right"
+};
 
 function key(r, c) {
     return `${r},${c}`;
@@ -280,7 +286,7 @@ function render() {
 
                 if (value === "S") {
                     cell.classList.add("start");
-                    cell.innerHTML = '<i class="fa-solid fa-location-dot tile-icon"></i>';
+                    cell.innerHTML = '<i class="fa-solid fa-circle-dot tile-icon"></i>';
                 }
 
                 if (value === "E") {
@@ -313,7 +319,7 @@ function render() {
                         "special-" + special.type
                     );
 
-                    cell.textContent = special.dir;
+                    cell.innerHTML = `<i class="fa-solid ${SPECIAL_ICONS[special.dir]} special-icon"></i>`;
                 }
             }
 
@@ -331,8 +337,8 @@ function render() {
 
     const treasureElement = $("treasure");
 
-    treasureElement.textContent =
-        hasTreasure ? "✓" : "✗";
+    treasureElement.innerHTML =
+        hasTreasure ? `<i class="fa-solid fa-check"></i>` : `<i class="fa-solid fa-xmark"></i>`;
 
     treasureElement.className =
         hasTreasure
@@ -689,5 +695,4 @@ $("win-restart").addEventListener(
     }
 );
 
-// loadLevel(currentLevelIndex);
-loadLevel(0);
+loadLevel(currentLevelIndex);

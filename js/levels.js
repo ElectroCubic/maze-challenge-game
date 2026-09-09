@@ -121,11 +121,11 @@ const LEVELS = [
     // Level 6
     {
         energy: 20,
-        pickup: 10,
+        pickup: 5,
 
         map: `
 #########
-#S.#...T#
+#S.#+..T#
 #..#....#
 #..#....#
 #..#.#..#
@@ -134,7 +134,9 @@ const LEVELS = [
         `,
 
         specials: {
-            "5,3": { type: "red", dir: "←" },
+            "2,1": { type: "red", dir: "↓" },
+            "3,2": { type: "red", dir: "↓" },
+            "4,1": { type: "red", dir: "↓" },
             "1,6": { type: "red", dir: "→" },
             "2,6": { type: "red", dir: "→" },
             "3,6": { type: "red", dir: "→" },
@@ -270,9 +272,6 @@ HHHHHHHHHHOHHHHHHHHHH
 
         }
     },
-
-
-
 ];
 
 const SECRET_LEVEL = {

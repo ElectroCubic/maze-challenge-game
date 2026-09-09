@@ -2,17 +2,16 @@
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     margin: 0;
     min-height: 100vh;
     padding: 30px 16px;
-
     background: #121212;
     color: #fff;
-
-    font-family: Arial, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
 .game {
@@ -21,14 +20,12 @@ body {
     text-align: center;
 }
 
-
 /* =========================
    TITLE
    ========================= */
 
 h1 {
     margin: 0 0 8px;
-
     font-size: 42px;
     font-weight: 700;
     letter-spacing: 4px;
@@ -36,11 +33,9 @@ h1 {
 
 .subtitle {
     margin: 0 0 24px;
-
     color: #999;
     font-size: 16px;
 }
-
 
 /* =========================
    HUD
@@ -52,46 +47,62 @@ h1 {
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-
     margin-bottom: 20px;
 }
 
 .hud-box {
-    min-width: 190px;
-
+    width: 210px;
+    min-width: 210px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 11px 16px;
-
     background: #1e1e1e;
-
     border: 1px solid #333;
     border-radius: 10px;
-
-    color: #ccc;
-
-    font-size: 15px;
-    font-weight: bold;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
 }
 
-.hud-box span {
+.hud-box > span {
     color: #fff;
 }
 
 .energy-box {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
 }
 
 .energy-box strong {
     color: #fff;
+    font-weight: 600;
+}
+
+.treasure-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.treasure-box > span:first-child {
+    color: #fff;
+    font-weight: 600;
 }
 
 #treasure {
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
     font-weight: bold;
+    line-height: 1;
 }
 
 .treasure-complete {
@@ -109,11 +120,9 @@ h1 {
 .energy-bar {
     width: 80px;
     height: 10px;
-
+    flex-shrink: 0;
     overflow: hidden;
-
     background: #111;
-
     border: 1px solid #444;
     border-radius: 5px;
 }
@@ -121,11 +130,8 @@ h1 {
 #energy-fill {
     width: 100%;
     height: 100%;
-
     background: #e58b24;
-
     border-radius: 4px;
-
     transition: width 0.15s ease;
 }
 
@@ -135,15 +141,11 @@ h1 {
 
 .level-display {
     margin: 0 0 10px;
-
     color: #aaa;
-
     font-size: 14px;
     font-weight: bold;
-
     letter-spacing: 2px;
 }
-
 
 /* =========================
    MAZE
@@ -153,27 +155,20 @@ h1 {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-
     display: flex;
     justify-content: center;
-
     padding: 0;
 }
 
 #maze {
     display: grid;
-
     grid-template-columns: repeat(var(--maze-width), 24px);
     grid-auto-rows: 24px;
-
     width: max-content;
     height: max-content;
-
     margin: 0;
-
     flex-shrink: 0;
 }
-
 
 /* =========================
    CELLS
@@ -182,13 +177,10 @@ h1 {
 .cell {
     width: 24px;
     height: 24px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     position: relative;
-
     font-size: 13px;
     font-weight: bold;
     box-sizing: border-box;
@@ -210,7 +202,6 @@ h1 {
     border-right: 2px solid #444;
 }
 
-
 /* =========================
    BASIC TILES
    ========================= */
@@ -231,20 +222,16 @@ h1 {
 .exit {
     background: #1e1e1e;
     color: #fff;
-
     font-size: 16px;
 }
 
 .treasure {
     background: #302b18;
     color: #ffd84d;
-
     font-size: 15px;
-
     box-shadow:
         inset 0 0 0 1px #806b1c;
 }
-
 
 .collected {
     background: #292929;
@@ -259,23 +246,20 @@ h1 {
 .hidden-exit {
     background: #ff0000;
     color: #fff;
-
     font-size: 16px;
 }
 
 .fake-wall {
-   background: #080808; 
+    background: #080808;
 }
 
 .tile-icon {
     font-size: 14px;
 }
 
-.control i {
-    font-size: 18px;
-    pointer-events: none;
+.special-icon {
+    font-size: 13px;
 }
-
 
 /* =========================
    ENERGY PICKUP
@@ -284,13 +268,10 @@ h1 {
 .energy-pickup {
     background: #30251a;
     color: #ff9d3d;
-
     font-size: 15px;
-
     box-shadow:
         inset 0 0 0 1px #75481d;
 }
-
 
 /* =========================
    SPECIAL TILES
@@ -299,7 +280,6 @@ h1 {
 .special-red {
     background: #4a2020;
     color: #ff6b6b;
-
     box-shadow:
         inset 0 0 0 1px #8d3838;
 }
@@ -307,7 +287,6 @@ h1 {
 .special-green {
     background: #1d402c;
     color: #62e894;
-
     box-shadow:
         inset 0 0 0 1px #32794e;
 }
@@ -315,7 +294,6 @@ h1 {
 .special-yellow {
     background: #4a3d18;
     color: #ffe16a;
-
     box-shadow:
         inset 0 0 0 1px #8b762b;
 }
@@ -323,11 +301,9 @@ h1 {
 .special-blue {
     background: #1d3448;
     color: #62baff;
-
     box-shadow:
         inset 0 0 0 1px #35658a;
 }
-
 
 /* =========================
    PLAYER
@@ -336,16 +312,12 @@ h1 {
 .player {
     background: #ff8c00 !important;
     color: #fff !important;
-
     border: 2px solid #fff;
-
     box-shadow:
         inset 0 0 0 3px #a65300,
         inset 0 0 10px rgba(255, 220, 150, 0.45);
-
     z-index: 2;
 }
-
 
 /* =========================
    CONTROLS
@@ -364,26 +336,26 @@ h1 {
 .control {
     width: 58px;
     height: 52px;
-
     border: 1px solid #444;
     border-radius: 10px;
-
     background: #242424;
     color: #fff;
-
     font-size: 22px;
     font-weight: bold;
-
     cursor: pointer;
     touch-action: manipulation;
-
+    -webkit-tap-highlight-color: transparent;
     box-shadow:
         0 4px 8px rgba(0, 0, 0, 0.3);
-
     transition:
         transform 0.08s,
         background 0.08s,
         border-color 0.08s;
+}
+
+.control i {
+    font-size: 18px;
+    pointer-events: none;
 }
 
 .control:hover {
@@ -416,7 +388,6 @@ h1 {
     font-weight: bold;
 }
 
-
 /* =========================
    RESET / NEXT LEVEL
    ========================= */
@@ -431,6 +402,10 @@ h1 {
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        background 0.15s,
+        transform 0.08s;
 }
 
 .reset:hover {
@@ -441,25 +416,29 @@ h1 {
     transform: scale(0.96);
 }
 
-
 .reset i {
     margin-right: 7px;
+}
+
+.next-level {
+    margin-left: 20px;
 }
 
 .next-level i {
     margin-left: 7px;
 }
 
+/* =========================
+   WIN SCREEN
+   ========================= */
+
 .win-screen {
     position: fixed;
     inset: 0;
-
     display: none;
     align-items: center;
     justify-content: center;
-
     background: rgba(0, 0, 0, 0.85);
-
     z-index: 100;
 }
 
@@ -469,31 +448,23 @@ h1 {
 
 .win-box {
     width: min(90vw, 450px);
-
     padding: 40px;
-
     text-align: center;
-
     background: #1c1c1c;
-
     border: 2px solid #444;
     border-radius: 12px;
-
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
 }
 
 .win-box h2 {
     margin: 0 0 15px;
-
     font-size: 36px;
     letter-spacing: 3px;
 }
 
 .win-box p {
     margin: 0 0 30px;
-
     color: #aaa;
-
     font-size: 16px;
     line-height: 1.7;
 }
@@ -501,7 +472,6 @@ h1 {
 .win-box em {
     color: #fff;
 }
-
 
 /* =========================
    MOBILE
@@ -524,13 +494,31 @@ h1 {
     }
 
     .hud {
-        gap: 7px;
+        gap: 8px;
+        flex-wrap: nowrap;
+        margin-bottom: 20px;
     }
 
     .hud-box {
-        min-width: 135px;
-        padding: 9px 12px;
+        width: 140px;
+        min-width: 140px;
+        height: 46px;
+        padding: 9px 8px;
         font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .energy-box {
+        gap: 6px;
+    }
+
+    .energy-bar {
+        width: 55px;
+        height: 9px;
+    }
+
+    #treasure {
+        font-size: 19px;
     }
 
     #maze {
@@ -538,9 +526,7 @@ h1 {
             var(--maze-width),
             22px
         );
-
         grid-auto-rows: 22px;
-
         width: calc(
             var(--maze-width) * 22px
         );
@@ -554,14 +540,6 @@ h1 {
     .instructions {
         gap: 8px 18px;
         font-size: 12px;
-    }
-
-    .energy-box {
-        gap: 8px;
-    }
-
-    .energy-bar {
-        width: 60px;
     }
 
     .level-display {
