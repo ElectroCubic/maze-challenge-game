@@ -1,6 +1,49 @@
 
 /* GAME LOGIC */
 
+let audioCtx;
+
+function playSound(type) {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    const sounds = {
+        move: [220, 0.05],
+        wall: [100, 0.06],
+        pickup: [500, 0.12],
+        treasure: [700, 0.2],
+        win: [900, 0.4],
+        lose: [120, 0.35]
+    };
+
+    const [frequency, duration] = sounds[type] || sounds.move;
+
+    osc.frequency.value = frequency;
+    osc.type = "square";
+
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + duration
+    );
+
+    osc.start(now);
+    osc.stop(now + duration);
+}
+
 const DIRS = {
     up: {
         dr: -1,
@@ -432,6 +475,7 @@ function move(input) {
     // Walls cost nothing.
     if (wall(nr, nc)) {
         render();
+        playSound("wall");
         return;
     }
 
@@ -439,6 +483,7 @@ function move(input) {
     // Yellow inversion costs 0.
     if (!freeYellowMove) {
         energy--;
+        playSound("move");
     }
 
     player = {r: nr, c: nc};
@@ -469,35 +514,24 @@ function handleTile() {
         player.c
     );
 
-    if (
-        grid[player.r][player.c] === "T" &&
-        !hasTreasure
-    ) {
+    if (grid[player.r][player.c] === "T" && !hasTreasure) 
+    {
         hasTreasure = true;
+        playSound("treasure");
     }
 
-    if (
-        grid[player.r][player.c] === "+" &&
-        !collectedPickups.has(
-            key(player.r, player.c)
-        )
-    ) {
-        collectedPickups.add(
-            key(player.r, player.c)
-        );
+    if (grid[player.r][player.c] === "+" && !collectedPickups.has(key(player.r, player.c)))
+    {
+        collectedPickups.add(key(player.r, player.c));
 
-        energy = Math.min(
-            startEnergy,
-            energy + pickupAmount
-        );
+        energy = Math.min(startEnergy, energy + pickupAmount);
+
+        playSound("pickup");
     }
 
-    if (
-        special &&
-        special.type === "green"
-    ) {
-        const direction =
-            arrowDirection(special.dir);
+    if (special && special.type === "green")
+    {
+        const direction = arrowDirection(special.dir);
 
         const d = DIRS[direction];
 
@@ -514,17 +548,13 @@ function handleTile() {
         }
     }
 
-    if (
-        special &&
-        special.type === "blue"
-    ) {
-        bluePending =
-            arrowDirection(special.dir);
+    if (special && special.type === "blue")
+    {
+        bluePending = arrowDirection(special.dir);
     }
 
-    if (
-        grid[player.r][player.c] === "E"
-    ) {
+    if (grid[player.r][player.c] === "E") 
+    {
         if (hasTreasure) {
             completeLevel();
             return;
@@ -533,6 +563,7 @@ function handleTile() {
 }
 
 function completeLevel() {
+    playSound("win");
     gameOver = true;
 
     // Secret level ending
@@ -577,6 +608,7 @@ function lose() {
         return;
     }
 
+    playSound("lose");
     energyFinished = true;
     gameOver = true;
 
