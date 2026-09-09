@@ -557,18 +557,18 @@ function showWinScreen(secret) {
     const message = $("win-message");
 
     if (secret) {
-        title.textContent = "YOU REALLY ESCAPED.";
+        title.textContent = "YOU REALLY ESCAPED!?";
 
         message.innerHTML =
-            "You found something that wasn't<br>" +
-            "supposed to be found.";
+            "You found the secret ending! <br>" +
+            "Thanks for playning! :D";
     }
     else {
         title.textContent = "YOU ESCAPED!";
 
         message.innerHTML =
             "You found the treasure.<br>" +
-            "<em>But did you find everything?</em>";
+            "<em>but something's still hidden?</em>";
     }
 
     $("win-screen").classList.add("show");
