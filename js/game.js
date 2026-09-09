@@ -561,7 +561,7 @@ function showWinScreen(secret) {
 
         message.innerHTML =
             "You found the secret ending! <br>" +
-            "Thanks for playning! :D";
+            "Thanks for playing! :D";
     }
     else {
         title.textContent = "YOU ESCAPED!";
